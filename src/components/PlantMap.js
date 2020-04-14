@@ -5,6 +5,8 @@ import useLocation from './useLocation';
 
 const attribution = '<a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 
+// TODO: pull out popup logic into a form with submit
+
 export default () => {
   const [markers, handleClick, handleDelete, handleInputChange] = useMapLogic()
   const [coords] = useLocation();
@@ -23,7 +25,7 @@ export default () => {
               <form className="ui form">
                 <div className="field">
                   <label>Plant Name</label>
-                  <input value={data.content} onChange={(e) => handleInputChange(e.target.value, data)}/>
+                  <input value={data.title} onChange={(e) => handleInputChange(e.target.value, data)}/>
                 </div>
                 <button className="ui small button red" onClick={() => handleDelete(data._id)}>Delete</button>
               </form>

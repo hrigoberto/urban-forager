@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import markerApi from '../api';
 
+//TODO time to make a reducer for these badboys
+
 
 export default () => {
 
@@ -26,6 +28,14 @@ export default () => {
     })
   }
 
+  async function updateMarker(val, _id) {
+    await markerApi.put(_id, {
+      title: val,
+      description: 'wtf',
+      image: 'waihdihwda.com'
+    })
+  }
+
   async function deleteMarker(_id) {
     const res = await markerApi.delete(_id)
     console.log(res);
@@ -38,15 +48,19 @@ export default () => {
 
   const handleDelete = (e) => {
     deleteMarker(e)
-    setMarkers(markers.filter(m => m._id !== e._id))
+    getMarkers()
+    // setMarkers(markers.filter(m => m._id !== e._id))
   }
   const handleInputChange = (value, data) => {
-    const marker = markers.find(m => m.key === data.key)
-    const updatedMarkers = markers.filter(m => m.key !== data.key)
-
-    marker.content = value;
-    updatedMarkers.push(marker);
-    setMarkers(updatedMarkers)
+    updateMarker(value, data._id)
+    getMarkers()
+    //
+    // const marker = markers.find(m => m._id === data._id)
+    // const updatedMarkers = markers.filter(m => m.key !== data._id)
+    //
+    // marker.content = value;
+    // updatedMarkers.push(marker);
+    // setMarkers(updatedMarkers)
   }
 
   return [markers, handleClick, handleDelete, handleInputChange]
