@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Marker, Popup } from 'react-leaflet'
+import { fetchMarkers, deleteMarker } from '../actions';
 
-import useMapLogic from './useMapLogic';
 
-const Markerlist = ({ data }) => {
-  const [markerList, handleClick, handleDelete, handleInputChange] = useMapLogic()
 
-  const renderMarker = () => {
+
+const MarkerList = (props) => {
+  useEffect(() => {
+    props.fetchMarkers()
+  }, [])
+
+  const handleDelete = (_id) => {
+    const result = window.confirm('Are you sure you want to delete this item?');
+      if (result) {
+    return props.deleteMarker(_id)
+    }
+  }
+
+  const renderMarker = (data) => {
     return (
       <Marker key={data._id} position={data.position} draggable="true">
         <Popup >
@@ -18,7 +30,6 @@ const Markerlist = ({ data }) => {
               <form className="ui form">
                 <div className="field">
                   <label>Plant Name</label>
-                  <input value={data.content} onChange={(e) => handleInputChange(e.target.value, data)}/>
                 </div>
                 <button className="ui small button red" onClick={() => handleDelete(data._id)}>Delete</button>
               </form>
@@ -29,7 +40,14 @@ const Markerlist = ({ data }) => {
     )
   }
 
-  return markerList.map(data => renderMarker(data))
+  return props.markers.map(data => renderMarker(data))
 }
 
-export default Markerlist
+const mapStateToProps = (state) => {
+  return {
+    fetchMarkers: fetchMarkers,
+    markers: state.markers
+  }
+}
+
+export default connect(mapStateToProps, { fetchMarkers, deleteMarker })(MarkerList);
