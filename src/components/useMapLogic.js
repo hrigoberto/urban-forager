@@ -1,20 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import markerApi from '../api';
+
 
 export default () => {
-  const [markers, setMarkers] = useState([
-        { key:'marker-1', position: [47.6262, -122.3221], content: 'raspberry' },
-        { key:'marker-2', position: [47.6162, -122.3421], content: 'blackberry' },
-        { key:'marker-3', position: [47.6062, -122.3321], content: 'apples' },
-      ])
-  const [idx, setIdx] = useState(4)
+
+  const [markers, setMarkers] = useState([])
+
+  async function getMarkers() {
+    const response = await markerApi.get()
+    setMarkers(response.data)
+
+    console.log(response);
+  }
+
+  useEffect(() => {
+    getMarkers()
+  }, [])
+
+  async function postMarker(latlng) {
+    await markerApi.post('', {
+      position: latlng,
+      title: 'wooooah',
+      description: 'wtf',
+      image: 'waihdihwda.com'
+    })
+  }
+
+  async function deleteMarker(_id) {
+    const res = await markerApi.delete(_id)
+    console.log(res);
+  }
 
   const handleClick = (e) => {
-    setMarkers([...markers, {key: `marker-${idx}`, position: e.latlng, content: 'itworked!'}])
-    setIdx(idx + 1)
+    postMarker(e.latlng)
+    getMarkers()
   }
 
   const handleDelete = (e) => {
-    setMarkers(markers.filter(marker => marker.position !== e))
+    deleteMarker(e)
+    setMarkers(markers.filter(m => m._id !== e._id))
   }
   const handleInputChange = (value, data) => {
     const marker = markers.find(m => m.key === data.key)

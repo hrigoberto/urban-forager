@@ -1,6 +1,8 @@
 import React from 'react';
 import PlantMap from './PlantMap';
 
+
+
 const App = () => {
   return (
     <div>
